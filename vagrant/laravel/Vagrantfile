@@ -1,0 +1,116 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+#
+# TAREFAS POS CRIAÇÃO DA MÁQUINA
+#
+# phpbrew use php-7.2.6 or phpbrew switch php-7.2.6 <-- mudança permanente
+# CRIANDO PROJETO LARAVEL
+# composer create-project --prefer-dist laravel/laravel . <-- no diretório atual
+#
+# SUBINDO SERVIDOR PHP
+# php -S localhost:8000 -t public/
+# php -S 0.0.0.0:8000 -t public/ <-- usando na maquina virtual
+#
+# nmap -p T:8000 192.168.1.200 <-- verificando a porta
+
+$apt = <<SCRIPT
+echo -e '\033[33m INSTALANDO PACOTES DEBIAN \033[m'
+sudo apt-get install build-essential -y
+sudo apt-get install autoconf -y
+sudo apt-get install bison -y
+sudo apt-get install libssl-dev -y
+sudo apt-get install libyaml-dev -y
+sudo apt-get install libreadline6-dev -y
+sudo apt-get install zlib1g-dev -y
+sudo apt-get install libncurses5-dev -y
+sudo apt-get install libffi-dev -y
+sudo apt-get install libgdbm-dev -y
+sudo apt-get install dirmngr -y
+sudo apt-get install libxrender-dev -y
+sudo apt-get install net-tools -y
+sudo apt-get install htop -y
+sudo apt-get install libxml2 -y
+sudo apt-get install libxml2-dev -y
+sudo apt-get install bzip2 -y
+sudo apt-get install libbz2-dev -y
+sudo apt-get install libcurl4-openssl-dev -y
+sudo apt-get install pkg-config -y
+sudo apt-get install libxslt1-dev -y
+echo "-------------------------------------"
+echo "pacote: git..."
+sudo apt-get install git -y
+echo "-------------------------------------"
+echo "pacote: curl..."
+sudo apt-get install curl -y
+sudo apt-get install gnupg1-curl -y
+echo "-------------------------------------"
+echo "pacote: postgresql..."
+sudo apt-get install libpq-dev -y
+sudo apt-get install libpq5 -y
+sudo apt-get install postgresql-client-9.6 -y
+echo "-------------------------------------"
+echo "pacote: nodejs..."
+sudo apt-get install nodejs -y
+echo "-------------------------------------"
+echo "pacote: vim..."
+sudo apt-get install vim -y
+echo "-------------------------------------"
+echo "pacote: apache..."
+sudo apt-get install apache2 -y
+sudo apt-get install libapache2-mod-php7.0 -y
+echo "-------------------------------------"
+echo "atualizado certificado..."
+sudo apt-get install --reinstall ca-certificates -y
+echo -e '\033[34m --------------------------------------- \033[m'
+echo -e '\033[34m PROCESSO FINALIZADO \033[m'
+SCRIPT
+
+$phpbrew = <<SCRIPT
+curl -L -O https://github.com/phpbrew/phpbrew/raw/master/phpbrew
+chmod +x phpbrew
+sudo mv phpbrew /usr/local/bin/phpbrew
+phpbrew init
+echo "source /home/vagrant/.phpbrew/bashrc" >> /home/vagrant/.bashrc
+source /home/vagrant/.phpbrew/bashrc
+echo -e '\033[33m INSTALANDO PHP \033[m'
+phpbrew install 7.2.6 +default +pdo +pgsql
+phpbrew switch php-7.2.6
+SCRIPT
+
+$composer = <<SCRIPT
+echo -e '\033[33m INSTALANDO COMPOSER \033[m'
+php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+php -r "if (hash_file('SHA384', 'composer-setup.php') === '544e09ee996cdf60ece3804abc52599c22b1f40f4323403c44d44fdfdd586475ca9813a858088ffbc1f233e9b180f061') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+php -r "unlink('composer-setup.php');"
+SCRIPT
+
+$node = <<SCRIPT
+wget https://raw.github.com/creationix/nvm/master/install.sh
+chmod +x /home/vagrant/install.sh
+/home/vagrant/install.sh
+SCRIPT
+
+Vagrant.configure("2") do |config|
+    config.vm.define "laravel"
+    config.vm.box = "generic/debian9"
+    config.vm.host_name = "laravel.dev"
+    config.vm.network :private_network, ip: "192.168.1.200"
+    config.vm.network "forwarded_port", guest: 8000, host: 8000 # php embedded server
+    config.vm.post_up_message
+
+    config.vm.synced_folder "/home/paulobalzi/devel/local/laravel/code", "/home/vagrant/devel"
+
+    config.vm.provider "virtualbox" do |vb|
+        vb.name = "laravel.dev"
+        vb.gui = false
+        vb.memory = 512
+        vb.cpus = 1
+    end
+
+    config.vm.provision "apt", type: "shell", preserve_order: true, inline: $apt
+    config.vm.provision "phpbrew", type: "shell", preserve_order: true, inline: $phpbrew, privileged: false
+    config.vm.provision "composer", type: "shell", preserve_order: true, inline: $composer, privileged: false
+    config.vm.provision "node", type: "shell", preserve_order: true, inline: $node, privileged: false
+end
