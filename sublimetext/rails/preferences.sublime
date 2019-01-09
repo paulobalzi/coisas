@@ -3,14 +3,37 @@
     "auto_complete_commit_on_tab": true,
     "auto_complete_with_fields": true,
     "bold_folder_labels": true,
-    "color_scheme": "Packages/Material Theme/schemes/Material-Theme.tmTheme",
+    "color_scheme": "Packages/Zeus/Sublime Text/Zeus-Sublime-Text.tmTheme",
     "default_encoding": "UTF-8",
+    "detect_indentation": false,
+    "draw_indent_guides": true,
     "draw_white_space": "selection",
     "ensure_newline_at_eof_on_save": true,
+    "file_exclude_patterns":
+    [
+        "*.pyc",
+        "*.pyo",
+        "*.exe",
+        "*.dll",
+        "*.obj",
+        "*.o",
+        "*.a",
+        "*.lib",
+        "*.so",
+        "*.dylib",
+        "*.ncb",
+        "*.sdf",
+        "*.suo",
+        "*.pdb",
+        "*.idb",
+        ".DS_Store",
+        "*.psd",
+        "*.db",
+        "*.sublime-workspace"
+    ],
     "font_options":
     [
-        "gray_antialias",
-        "subpixel_antialias"
+        "no_antialias"
     ],
     "font_size": 8,
     "highlight_line": true,
@@ -22,8 +45,7 @@
     ],
     "indent_guide_options":
     [
-        "draw_normal",
-        "draw_active"
+        "draw_normal"
     ],
     "index_exclude_patterns":
     [
@@ -55,6 +77,12 @@
     "show_full_path": true,
     "tab_size": 4,
     "theme": "Adaptive.sublime-theme",
+    "theme_font_options":
+    [
+        "no_antialias"
+    ],
     "translate_tabs_to_spaces": true,
-    "trim_trailing_white_space_on_save": true
+    "trim_trailing_white_space_on_save": true,
+    "word_wrap": "true",
+    "gutter": true
 }
