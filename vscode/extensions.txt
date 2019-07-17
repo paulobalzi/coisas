@@ -1,0 +1,16 @@
+> code --list-extensions
+
+alefragnani.project-manager
+codezombiech.gitignore
+dbaeumer.vscode-eslint
+donjayamanne.git-extension-pack
+donjayamanne.githistory
+eamodio.gitlens
+felixfbecker.php-debug
+felixfbecker.php-intellisense
+felixfbecker.php-pack
+ms-vscode.vscode-typescript-tslint-plugin
+sleistner.vscode-fileutils
+ziyasal.vscode-open-in-github
+
+--install-extension <ext> //see 'code --help'
